@@ -1,8 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { compareTwoStrings, findBestMatch } from 'string-similarity';
 import { ICovidData } from '../models/icovid-data';
-import { BehaviorSubject, Observable, Subject } from 'rxjs';
+import { Observable, Subject } from 'rxjs';
 
 const URL = 'https://covid190api.herokuapp.com/api/data';
 
@@ -49,33 +48,5 @@ export class ServerService {
   get() {
     const body = null;
     return this.httpClient.get(URL);
-  }
-
-  test(countries: string[]) {
-    let uniqueCountries: string[] = Array<string>();
-    uniqueCountries = this.scrub(countries, 0.7);
-    //uniqueCountries = this.scrub(uniqueCountries, 0.6);
-    // uniqueCountries = this.scrub(uniqueCountries, 0.3);
-  }
-
-  scrub(countries: string[], ratingThreshold: number): string[] {
-    let uniqueCountries: string[] = Array<string>();
-
-    countries.forEach(element => {
-      if (uniqueCountries.length == 0) {
-        uniqueCountries.push(element);
-      }
-      else {
-        const bestMatch = findBestMatch(element, uniqueCountries);
-        if (bestMatch.bestMatch.rating < ratingThreshold) {
-          uniqueCountries.push(element);
-          // console.log(`New: ${bestMatch.bestMatch.rating}-${element}-${bestMatch.bestMatch.target}`);
-        } else {
-          console.log(`Old: ${bestMatch.bestMatch.rating} ${element}-${bestMatch.bestMatch.target}`);
-        }
-      }
-    });
-
-    return uniqueCountries;
   }
 }

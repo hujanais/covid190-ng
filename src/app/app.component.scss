@@ -2,9 +2,14 @@
   display: flex;
   flex-direction: column;
   height: 100vh;
-  overflow: hidden;
   box-sizing: border-box;
   margin: 5px;
+}
+
+.div-title {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
 }
 
 .div-search {
@@ -31,6 +36,11 @@
 .button-style {
   margin-left: 5px;
   margin-right: 5px;
+}
+
+.div-canvas {
+  box-sizing: border-box;
+  height: 100%;
 }
 
 .div-result {

@@ -8,8 +8,9 @@
     </form>
 </div> -->
 
-  <div>Data obtained from WHO daily situation reports.</div>
-  <div>https://covid190api.herokuapp.com/api/data</div>
+  <div class='div-title'>WHO daily situation reports from https://covid190api.herokuapp.com/api/data.
+  </div>
+  <div>LastUpdated: {{lastUpdated | date:'longDate'}}</div>
 
   <div class='div-search-result'>
     <mat-form-field class='search-form-field'>
@@ -24,8 +25,13 @@
   </div>
 
   <div class='div-result'>
-    <canvas baseChart [chartType]="'line'" [datasets]="chartData" [legend]=true [options]="chartOptions"
-      [labels]="xAxisLabels">
+    <canvas div='div-canvas' id='canvas1' baseChart [chartType]="'line'" [datasets]="chartData1" [legend]=true
+      [options]="chartOptions" [labels]="xAxisLabels">
+    </canvas>
+  </div>
+  <div class='div-result'>
+    <canvas div='div-canvas' id='canvas2' baseChart [chartType]="'bar'" [datasets]="chartData2" [legend]=true
+      [options]="chartOptions2" [labels]="xAxisLabels">
     </canvas>
   </div>
 </div>

@@ -25,3 +25,10 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+work for me adding "@babel/compat-data": "7.8.0" and delete lock file, then npm i, after this I was able to run the app.
+needed to ng build correctly.
+
+heroku container:push web -a covid-who
+heroku container:release web -a covid-who
+https://covid-who.herokuapp.com/

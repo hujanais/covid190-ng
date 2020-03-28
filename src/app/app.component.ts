@@ -23,8 +23,12 @@ export class AppComponent implements OnInit, OnDestroy {
   // The dataset to be presented.
   selectedDataSet = new Array<ICovidData[]>();
 
+  // the latest data timestamp
+  lastUpdated: Date;
+
   // The chart data
-  chartData: IChartData[] = new Array<IChartData>();
+  chartData1: IChartData[] = new Array<IChartData>();
+  chartData2: IChartData[] = new Array<IChartData>();
 
   xAxisLabels = [];
 
@@ -39,7 +43,8 @@ export class AppComponent implements OnInit, OnDestroy {
   title = 'covid19-ng';
   _subscription: Subscription;
 
-  @ViewChild(BaseChartDirective, { static: false }) chart: BaseChartDirective;
+  @ViewChild('canvas1', { static: false }) chart: BaseChartDirective;
+  @ViewChild('canvas2', { static: false }) chart2: BaseChartDirective;
 
   chartOptions = {
     responsive: true,
@@ -50,19 +55,45 @@ export class AppComponent implements OnInit, OnDestroy {
     },
     scales: {
       xAxes: [{
+        type: 'time',
+        time: {
+          unit: 'day'
+        },
         display: true
       }]
     }
   };
 
+  chartOptions2 = {
+    responsive: true,
+    maintainAspectRatio: true,
+    title: {
+      display: true,
+      text: 'New Cases'
+    },
+    scales: {
+      xAxes: [{
+        type: 'time',
+        time: {
+          unit: 'day'
+        },
+        display: true
+      }]
+    }
+  };
+
+
   constructor(private serverService: ServerService) {
-    this.chartData.push({ data: [], label: 'test' });
+    this.chartData1.push({ data: [], label: 'test' });
+    this.chartData2.push({ data: [], label: 'test' });
   }
 
   ngOnInit(): void {
     this._subscription = this.serverService.getFilterCountryObservable().subscribe(resp => {
       this.data = resp;
       this.countries = [... new Set(this.data.map(d => d.name))].sort();
+      const dates = this.data.map(p => p.reportDate);
+      this.lastUpdated = dates.reduce((a, b) => a > b ? a : b);
     });
 
     this.serverService.hydrate();
@@ -77,7 +108,7 @@ export class AppComponent implements OnInit, OnDestroy {
    */
   reset(): void {
     this.selectedCountries = new Array<string>();
-    this.chartData.length = 0;
+    this.chartData1.length = 0;
   }
 
   /**
@@ -105,10 +136,12 @@ export class AppComponent implements OnInit, OnDestroy {
    * Update graphs and results
    */
   updateGraphs(): void {
-    this.chartData.length = 0;
+    this.chartData1.length = 0;
+    this.chartData2.length = 0;
 
     let minX: number = Number.MAX_VALUE;
     let maxX: number = 0;
+    let arraysize: number = 0;
 
     this.selectedDataSet.length = 0;
     this.selectedCountries.forEach(name => {
@@ -120,29 +153,39 @@ export class AppComponent implements OnInit, OnDestroy {
       minX = Math.min(minX, Math.min(...arr));
       maxX = Math.max(maxX, Math.max(...arr));
 
+      // build the x-axis with date.
+      if (countryData.length > arraysize) {
+        this.xAxisLabels = countryData.map(c => c.reportDate);
+        arraysize = countryData.length;
+      }
+
       this.selectedDataSet.push(countryData);
 
-      this.chartData.push({ data: [], label: name });
+      this.chartData1.push({ data: [], label: name });
+      this.chartData2.push({ data: [], label: name });
     });
 
     // display the actual data.
     // Step 1. build the x-axis range.
-    this.xAxisLabels.length = 0;
-    for (let x = minX; x <= maxX; x++) {
-      this.xAxisLabels.push(x.toString());
-    }
+    // this.xAxisLabels.length = 0;
+    // for (let x = minX; x <= maxX; x++) {
+    //   this.xAxisLabels.push(x.toString());
+    // }
 
     let idx = 0;
     this.selectedDataSet.forEach(dataSet => {
       // Step 2. preallocate memory of chart.
-      this.chartData[idx].data = new Array<number>(maxX - minX + 1);
+      this.chartData1[idx].data = new Array<number>(maxX - minX + 1);
+      this.chartData2[idx].data = new Array<number>(maxX - minX + 1);
       let startIdx = dataSet[0].reportNumber - minX;
       let howmany = maxX - dataSet[0].reportNumber + 1;
-      this.chartData[idx].data.splice(startIdx, howmany, ...dataSet.map(d => d.cases));
+      this.chartData1[idx].data.splice(startIdx, howmany, ...dataSet.map(d => d.cases));
+      this.chartData2[idx].data.splice(startIdx, howmany, ...dataSet.map(d => d.newCases));
       idx++;
     });
 
     // update the chart.
     this.chart.update();
+    this.chart2.update();
   }
 }
