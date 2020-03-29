@@ -1,27 +1,43 @@
-.div-container {
+.div-main-container {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   box-sizing: border-box;
-  margin: 5px;
+  overflow: hidden;
 }
 
-.div-busy-indicator {
+.linkActive {
+  color: red;
+  font-style: italic;
+}
+
+.navbar {
+  height: 60px;
   display: flex;
   flex-direction: row;
-  color: blue;
-  font-size: large;
-  margin: 5px;
+  justify-content: space-between;
   align-items: center;
+}
 
-  mat-progress-bar {
-    margin-left: 10px;
-    width: 50%;
-  }
+.toolbar-title {
+  font-size: small;
+  margin: 0 5px;
 }
 
 .div-title {
-  display: flex;
-  width: 100%;
-  flex-direction: column;
+  color: white;
+  opacity: 0.86;
+}
+
+.div-router-outlet {
+  flex: 1;
+  overflow: auto;
+}
+
+.div-footer {
+  height: auto;
+  background-color: #363636;
+  color: white;
+  opacity: 0.86;
 }

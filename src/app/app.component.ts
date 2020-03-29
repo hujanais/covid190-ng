@@ -1,14 +1,15 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { ServerService } from './services/server.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss']
+  styleUrls: ['./app.component.scss'],
 })
+
 export class AppComponent implements OnInit {
 
-  isHydrating = false;
+  isLoading = false;
   lastUpdated: Date;
 
   constructor(private service: ServerService) {
@@ -16,15 +17,13 @@ export class AppComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.isHydrating = true;
+    this.isLoading = false;
     this.service.getNewDataObservable().subscribe(data => {
       const dates = data.map(p => p.reportDate);
       this.lastUpdated = dates.reduce((a, b) => a > b ? a : b);
-      this.isHydrating = false;
+      this.isLoading = false;
     });
 
-    // this.service.hydrate();
+    this.service.hydrate();
   }
-
-
 }

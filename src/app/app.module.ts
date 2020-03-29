@@ -10,11 +10,13 @@ import { MatSelectModule } from '@angular/material/select';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatToolbarModule } from '@angular/material';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { CovidTableComponent } from './components/covid-table/covid-table.component';
 import { GraphsViewComponent } from './components/graphs-view/graphs-view.component';
+import { MatIconModule } from '@angular/material/icon';
 
 @NgModule({
   declarations: [
@@ -37,6 +39,9 @@ import { GraphsViewComponent } from './components/graphs-view/graphs-view.compon
     MatSelectModule,
     MatTabsModule,
     MatProgressBarModule,
+    MatToolbarModule,
+    MatIconModule,
+
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,18 +1,17 @@
 <div class='div-main-container'>
-  <div class='div-title'>WHO daily reports from https://covid190api.herokuapp.com/api/data
+  <mat-toolbar color='primary' class='navbar'>
+    <div class='toolbar-title'>WHO COVID-19 {{lastUpdated | date:'longDate'}}</div>
+    <div>
+      <a mat-button routerLink='/table' routerLinkActive="active">
+        <mat-icon> table_chart</mat-icon>
+      </a>
+      <a mat-button routerLink="/graph" routerLinkActive="active">
+        <mat-icon> show_chart</mat-icon>
+      </a>
+    </div>
+  </mat-toolbar>
+  <div class='div-router-outlet'>
+    <router-outlet></router-outlet>
   </div>
-  <div class='div-busy-indicator' [hidden]='isLoading'>
-    Loading...
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-  </div>
-  <div>LastUpdated: {{lastUpdated | date:'longDate'}}</div>
-  <mat-tab-group>
-    <mat-tab label="Table">
-      <app-covid-table></app-covid-table>
-    </mat-tab>
-    <mat-tab label="Graph">
-      <app-graphs-view></app-graphs-view>
-    </mat-tab>
-  </mat-tab-group>
 
-</div>
+  <!-- <div class='div-title'>WHO daily reports from https://covid190api.herokuapp.com/api/data -->
