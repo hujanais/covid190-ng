@@ -11,10 +11,12 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
+import { CovidTableComponent } from './components/covid-table/covid-table.component';
 
 @NgModule({
   declarations: [
-    AppComponent
+    AppComponent,
+    CovidTableComponent
   ],
   imports: [
     BrowserModule,

@@ -89,7 +89,7 @@ export class AppComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this._subscription = this.serverService.getFilterCountryObservable().subscribe(resp => {
+    this._subscription = this.serverService.getNewDataObservable().subscribe(resp => {
       this.data = resp;
       this.countries = [... new Set(this.data.map(d => d.name))].sort();
       const dates = this.data.map(p => p.reportDate);
@@ -109,6 +109,7 @@ export class AppComponent implements OnInit, OnDestroy {
   reset(): void {
     this.selectedCountries = new Array<string>();
     this.chartData1.length = 0;
+    this.chartData2.length = 0;
   }
 
   /**
@@ -138,12 +139,13 @@ export class AppComponent implements OnInit, OnDestroy {
   updateGraphs(): void {
     this.chartData1.length = 0;
     this.chartData2.length = 0;
+    this.selectedDataSet.length = 0;
+    this.xAxisLabels.length = 0;
 
     let minX: number = Number.MAX_VALUE;
     let maxX: number = 0;
     let arraysize: number = 0;
 
-    this.selectedDataSet.length = 0;
     this.selectedCountries.forEach(name => {
       let countryData = this.data.filter(p => p.name === name).sort((obj1, obj2) => {
         return obj1.reportNumber - obj2.reportNumber;
@@ -153,7 +155,7 @@ export class AppComponent implements OnInit, OnDestroy {
       minX = Math.min(minX, Math.min(...arr));
       maxX = Math.max(maxX, Math.max(...arr));
 
-      // build the x-axis with date.
+      // Step 1. build the x-axis range.
       if (countryData.length > arraysize) {
         this.xAxisLabels = countryData.map(c => c.reportDate);
         arraysize = countryData.length;
@@ -164,13 +166,6 @@ export class AppComponent implements OnInit, OnDestroy {
       this.chartData1.push({ data: [], label: name });
       this.chartData2.push({ data: [], label: name });
     });
-
-    // display the actual data.
-    // Step 1. build the x-axis range.
-    // this.xAxisLabels.length = 0;
-    // for (let x = minX; x <= maxX; x++) {
-    //   this.xAxisLabels.push(x.toString());
-    // }
 
     let idx = 0;
     this.selectedDataSet.forEach(dataSet => {

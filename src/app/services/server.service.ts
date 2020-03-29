@@ -10,11 +10,9 @@ const URL = 'https://covid190api.herokuapp.com/api/data';
 })
 export class ServerService {
 
-  private filterSubject = new Subject<ICovidData[]>();
+  private newDataSubject = new Subject<ICovidData[]>();
 
   private covidData: ICovidData[];
-
-  public filteredData: ICovidData[];
 
   constructor(private httpClient: HttpClient) { }
 
@@ -24,29 +22,32 @@ export class ServerService {
   hydrate() {
     this.httpClient.get(URL).subscribe((resp: ICovidData[]) => {
       this.covidData = resp;
-      this.filterCountry(null);
+      this.newDataSubject.next(this.covidData);
     }, error => {
       console.log(error);
     });
   }
 
-  filterCountry(name: string) {
-    if (!name) {
-      this.filteredData = this.covidData;
-    } else {
-      const lowerCaseName = name.toLowerCase();
-      this.filteredData = this.covidData.filter(d => d.name.toLowerCase().includes(lowerCaseName));
-    }
-
-    this.filterSubject.next(this.filteredData);
+  getNewDataObservable(): Observable<ICovidData[]> {
+    return this.newDataSubject.asObservable();
   }
 
-  getFilterCountryObservable(): Observable<ICovidData[]> {
-    return this.filterSubject.asObservable();
-  }
+  // private filterCountry(name: string) {
+  //   if (!name) {
+  //     this.filteredData = this.covidData;
+  //   } else {
+  //     const lowerCaseName = name.toLowerCase();
+  //     this.filteredData = this.covidData.filter(d => d.name.toLowerCase().includes(lowerCaseName));
+  //   }
 
-  get() {
-    const body = null;
-    return this.httpClient.get(URL);
+  //   this.filterSubject.next(this.filteredData);
+  // }
+
+  // getFilterCountryObservable(): Observable<ICovidData[]> {
+  //   return this.filterSubject.asObservable();
+  // }
+
+  get(): ICovidData[] {
+    return this.covidData;
   }
 }
