@@ -1,1 +1,12 @@
-<p>covid-table works!</p>
+<div class='div-covidtable-container'>
+    <table>
+        <th>Name</th>
+        <th>Cases</th>
+        <th>Deaths</th>
+    </table>
+    <tr *ngFor="let item of data">
+        <td>{{item.name}}</td>
+        <td>{{item.cases}}</td>
+        <td>{{item.deaths}}</td>
+    </tr>
+</div>

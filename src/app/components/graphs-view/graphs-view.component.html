@@ -1,0 +1,24 @@
+<div class='div-container'>
+    <div class='div-search-result'>
+        <mat-form-field class='search-form-field'>
+            <mat-label>Countries</mat-label>
+            <mat-select [formControl]="toppings" multiple [(ngModel)]="selectedCountries">
+                <mat-option *ngFor="let item of countries" [value]="item" (onSelectionChange)="onSearchChange($event)">
+                    {{item}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <button mat-raised-button color='primary' class='button-style' (click)="reset()">Reset</button>
+    </div>
+
+    <div class='div-result'>
+        <canvas div='div-canvas' id='canvas1' baseChart [chartType]="'line'" [datasets]="chartData1" [legend]=true
+            [options]="chartOptions" [labels]="xAxisLabels">
+        </canvas>
+    </div>
+    <div class='div-result'>
+        <canvas div='div-canvas' id='canvas2' baseChart [chartType]="'bar'" [datasets]="chartData2" [legend]=true
+            [options]="chartOptions2" [labels]="xAxisLabels">
+        </canvas>
+    </div>
+</div>
