@@ -16,6 +16,7 @@ export class CovidTableComponent implements OnInit, OnDestroy {
   constructor(private service: ServerService) { }
 
   ngOnInit() {
+    console.log('ngOnInit');
     this.data = this.service.get();
 
     this.subscriber = this.service.getNewDataObservable().subscribe(resp => {

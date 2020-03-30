@@ -17,7 +17,7 @@ export interface IChartData {
 })
 export class GraphsViewComponent implements OnInit, OnDestroy {
   // The full dataset.
-  data: ICovidData[];
+  data: ICovidData[] = null;
 
   // The dataset to be presented.
   selectedDataSet = new Array<ICovidData[]>();
@@ -88,16 +88,27 @@ export class GraphsViewComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.data = this.serverService.get();
+    this.initialize(this.data);
+
     this._subscription = this.serverService.getNewDataObservable().subscribe(resp => {
       this.data = resp;
-      this.countries = [... new Set(this.data.map(d => d.name))].sort();
-      const dates = this.data.map(p => p.reportDate);
-      this.lastUpdated = dates.reduce((a, b) => a > b ? a : b);
+      this.initialize(this.data);
     });
   }
 
   ngOnDestroy(): void {
     this._subscription.unsubscribe();
+  }
+
+  initialize(covidData: ICovidData[]) {
+    if (!covidData) {
+      return;
+    }
+
+    this.countries = [... new Set(covidData.map(d => d.name))].sort();
+    const dates = covidData.map(p => p.reportDate);
+    this.lastUpdated = dates.reduce((a, b) => a > b ? a : b);
   }
 
   /**
