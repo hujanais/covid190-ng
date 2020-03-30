@@ -12,7 +12,9 @@ export class ServerService {
 
   private newDataSubject = new Subject<ICovidData[]>();
 
-  private covidData: ICovidData[];
+  private covidData: ICovidData[] = null;
+
+  private _lastUpdated: Date;
 
   constructor(private httpClient: HttpClient) { }
 
@@ -22,7 +24,11 @@ export class ServerService {
   hydrate() {
     this.httpClient.get(URL).subscribe((resp: ICovidData[]) => {
       this.covidData = resp;
+      const dates = resp.map(p => p.reportDate);
+      this._lastUpdated = dates.reduce((a, b) => a > b ? a : b);
+
       this.newDataSubject.next(this.covidData);
+
     }, error => {
       console.log(error);
     });
@@ -32,21 +38,27 @@ export class ServerService {
     return this.newDataSubject.asObservable();
   }
 
-  // private filterCountry(name: string) {
-  //   if (!name) {
-  //     this.filteredData = this.covidData;
-  //   } else {
-  //     const lowerCaseName = name.toLowerCase();
-  //     this.filteredData = this.covidData.filter(d => d.name.toLowerCase().includes(lowerCaseName));
-  //   }
+  /**
+   * Get the last updated time.
+   */
+  get lastUpdated(): Date {
+    return this._lastUpdated;
+  }
 
-  //   this.filterSubject.next(this.filteredData);
-  // }
+  /**
+   * Return all data from the last updated date.
+   */
+  get latestData(): ICovidData[] {
+    if (this.covidData !== null) {
+      return this.covidData.filter(m => m.reportDate === this._lastUpdated);
+    }
+    else
+      return null;
+  }
 
-  // getFilterCountryObservable(): Observable<ICovidData[]> {
-  //   return this.filterSubject.asObservable();
-  // }
-
+  /**
+   * Get the raw data.
+   */
   get(): ICovidData[] {
     return this.covidData;
   }

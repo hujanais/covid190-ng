@@ -116,6 +116,7 @@ export class GraphsViewComponent implements OnInit, OnDestroy {
    */
   reset(): void {
     this.selectedCountries = new Array<string>();
+    this.xAxisLabels.length = 0;
     this.chartData1.length = 0;
     this.chartData2.length = 0;
   }
@@ -188,7 +189,11 @@ export class GraphsViewComponent implements OnInit, OnDestroy {
     });
 
     // update the chart.
-    this.chart.update();
-    this.chart2.update();
+    if (this.chart !== undefined) {
+      this.chart.update();
+    }
+    if (this.chart2 !== undefined) {
+      this.chart2.update();
+    }
   }
 }

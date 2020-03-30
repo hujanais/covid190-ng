@@ -1,12 +1,14 @@
 <div class='div-covidtable-container'>
     <div class='div-table'>
-        <table>
+        <table class='scollable-table'>
             <th>Name</th>
             <th>Cases</th>
+            <th>New Cases</th>
             <th>Deaths</th>
             <tr *ngFor="let item of data">
                 <td>{{item.name}}</td>
                 <td>{{item.cases}}</td>
+                <td>{{item.newCases}}</td>
                 <td>{{item.deaths}}</td>
             </tr>
         </table>

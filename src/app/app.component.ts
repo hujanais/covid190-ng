@@ -19,8 +19,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.isLoading = false;
     this.service.getNewDataObservable().subscribe(data => {
-      const dates = data.map(p => p.reportDate);
-      this.lastUpdated = dates.reduce((a, b) => a > b ? a : b);
+      this.lastUpdated = this.service.lastUpdated;
       this.isLoading = false;
     });
 

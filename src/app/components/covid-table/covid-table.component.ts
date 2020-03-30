@@ -17,11 +17,17 @@ export class CovidTableComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     console.log('ngOnInit');
-    this.data = this.service.get();
+    this.initialize(this.service.latestData);
 
     this.subscriber = this.service.getNewDataObservable().subscribe(resp => {
-      this.data = resp;
+      this.initialize(this.service.latestData);
     });
+  }
+
+  initialize(covidData: ICovidData[]) {
+    if (covidData !== null && covidData !== undefined) {
+      this.data = covidData.sort((a, b) => a.cases < b.cases ? 1 : -1);
+    }
   }
 
   ngOnDestroy(): void {
