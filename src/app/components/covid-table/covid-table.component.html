@@ -1,16 +1,22 @@
 <div class='div-covidtable-container'>
     <div class='div-table'>
-        <table class='scollable-table'>
-            <th>Name</th>
-            <th>Cases</th>
-            <th>New Cases</th>
-            <th>Deaths</th>
-            <tr *ngFor="let item of data">
-                <td>{{item.name}}</td>
-                <td>{{item.cases}}</td>
-                <td>{{item.newCases}}</td>
-                <td>{{item.deaths}}</td>
-            </tr>
+        <table class='fixed_header'>
+            <thead>
+                <tr>
+                    <td>Name</td>
+                    <td>Cases</td>
+                    <td>New Cases</td>
+                    <td>Deaths</td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of data">
+                    <td>{{item.name}}</td>
+                    <td>{{item.cases}}</td>
+                    <td>{{item.newCases}}</td>
+                    <td>{{item.deaths}}</td>
+                </tr>
+            </tbody>
         </table>
     </div>
 </div>

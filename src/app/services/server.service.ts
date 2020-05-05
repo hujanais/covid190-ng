@@ -3,7 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { ICovidData } from '../models/icovid-data';
 import { Observable, Subject } from 'rxjs';
 
-const URL = 'https://covid190api.herokuapp.com/api/data';
+// const URL = 'https://covid190api.herokuapp.com/api/data';
+const URL = 'https://covid19.pillious.now.sh/api/data';
 
 @Injectable({
   providedIn: 'root'
@@ -51,9 +52,9 @@ export class ServerService {
   get latestData(): ICovidData[] {
     if (this.covidData !== null) {
       return this.covidData.filter(m => m.reportDate === this._lastUpdated);
-    }
-    else
+    } else {
       return null;
+    }
   }
 
   /**

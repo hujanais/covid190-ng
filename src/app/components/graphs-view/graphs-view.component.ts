@@ -8,6 +8,7 @@ import { Subscription } from 'rxjs';
 export interface IChartData {
   data: number[];
   label: string;
+  fill: boolean;
 }
 
 @Component({
@@ -83,8 +84,8 @@ export class GraphsViewComponent implements OnInit, OnDestroy {
 
 
   constructor(private serverService: ServerService) {
-    this.chartData1.push({ data: [], label: 'test' });
-    this.chartData2.push({ data: [], label: 'test' });
+    this.chartData1.push({ data: [], label: 'test', fill: false });
+    this.chartData2.push({ data: [], label: 'test', fill: false });
   }
 
   ngOnInit(): void {
@@ -123,18 +124,17 @@ export class GraphsViewComponent implements OnInit, OnDestroy {
 
   /**
    * Handle the clicking and unclicking of the multi-select.
-   * @param event 
+   * @param event
    */
   onSearchChange(event) {
     if (event.isUserInput) {
-      let country = event.source.value;
-      let index = this.selectedCountries.indexOf(country);
+      const country = event.source.value;
+      const index = this.selectedCountries.indexOf(country);
       if (event.source.selected) {
         if (index < 0) {
           this.selectedCountries.push(event.source.value);
         }
-      }
-      else {
+      } else {
         this.selectedCountries.splice(index, 1);
       }
 
@@ -152,11 +152,11 @@ export class GraphsViewComponent implements OnInit, OnDestroy {
     this.xAxisLabels.length = 0;
 
     let minX: number = Number.MAX_VALUE;
-    let maxX: number = 0;
-    let arraysize: number = 0;
+    let maxX = 0;
+    let arraysize = 0;
 
     this.selectedCountries.forEach(name => {
-      let countryData = this.data.filter(p => p.name === name).sort((obj1, obj2) => {
+      const countryData = this.data.filter(p => p.name === name).sort((obj1, obj2) => {
         return obj1.reportNumber - obj2.reportNumber;
       });
 
@@ -172,8 +172,8 @@ export class GraphsViewComponent implements OnInit, OnDestroy {
 
       this.selectedDataSet.push(countryData);
 
-      this.chartData1.push({ data: [], label: name });
-      this.chartData2.push({ data: [], label: name });
+      this.chartData1.push({ data: [], label: name, fill: false });
+      this.chartData2.push({ data: [], label: name, fill: false });
     });
 
     let idx = 0;
@@ -181,8 +181,8 @@ export class GraphsViewComponent implements OnInit, OnDestroy {
       // Step 2. preallocate memory of chart.
       this.chartData1[idx].data = new Array<number>(maxX - minX + 1);
       this.chartData2[idx].data = new Array<number>(maxX - minX + 1);
-      let startIdx = dataSet[0].reportNumber - minX;
-      let howmany = maxX - dataSet[0].reportNumber + 1;
+      const startIdx = dataSet[0].reportNumber - minX;
+      const howmany = maxX - dataSet[0].reportNumber + 1;
       this.chartData1[idx].data.splice(startIdx, howmany, ...dataSet.map(d => d.cases));
       this.chartData2[idx].data.splice(startIdx, howmany, ...dataSet.map(d => d.newCases));
       idx++;
