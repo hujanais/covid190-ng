@@ -1,0 +1,8 @@
+{
+  "/api/*": {
+    "target": "https://covid19.pillious.now.sh",
+    "secure": false,
+    "logLevel": "debug",
+    "changeOrigin": true
+  }
+}

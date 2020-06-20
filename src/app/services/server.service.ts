@@ -23,7 +23,7 @@ export class ServerService {
    * Get data once from server.
    */
   hydrate() {
-    this.httpClient.get(URL).subscribe((resp: ICovidData[]) => {
+    this.httpClient.get('/api/data').subscribe((resp: ICovidData[]) => {
       this.covidData = resp;
       const dates = resp.map(p => p.reportDate);
       this._lastUpdated = dates.reduce((a, b) => a > b ? a : b);
