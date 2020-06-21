@@ -39,9 +39,10 @@ export class GraphsViewComponent implements OnInit, OnDestroy {
   toppings = new FormControl();
   // Contains the list of selected countries.
   selectedCountries: string[] = new Array<string>();
+  private _selectedCountry: string;
 
   title = 'covid19-ng';
-  _subscription: Subscription;
+  subcriptions: Subscription = new Subscription();
 
   @ViewChild('canvas1', { static: false }) chart: BaseChartDirective;
   @ViewChild('canvas2', { static: false }) chart2: BaseChartDirective;
@@ -92,14 +93,14 @@ export class GraphsViewComponent implements OnInit, OnDestroy {
     this.data = this.serverService.get();
     this.initialize(this.data);
 
-    this._subscription = this.serverService.getNewDataObservable().subscribe(resp => {
+    this.subcriptions.add(this.serverService.getNewDataObservable().subscribe(resp => {
       this.data = resp;
       this.initialize(this.data);
-    });
+    }));
   }
 
   ngOnDestroy(): void {
-    this._subscription.unsubscribe();
+    this.subcriptions.unsubscribe();
   }
 
   initialize(covidData: ICovidData[]) {
@@ -126,26 +127,31 @@ export class GraphsViewComponent implements OnInit, OnDestroy {
    * Handle the clicking and unclicking of the multi-select.
    * @param event
    */
-  onSearchChange(event) {
-    if (event.isUserInput) {
-      const country = event.source.value;
-      const index = this.selectedCountries.indexOf(country);
-      if (event.source.selected) {
-        if (index < 0) {
-          this.selectedCountries.push(event.source.value);
-        }
-      } else {
-        this.selectedCountries.splice(index, 1);
-      }
+  // onSearchChange(event) {
+  //   if (event.isUserInput) {
+  //     const country = event.source.value;
+  //     const index = this.selectedCountries.indexOf(country);
+  //     if (event.source.selected) {
+  //       if (index < 0) {
+  //         this.selectedCountries.push(event.source.value);
+  //       }
+  //     } else {
+  //       this.selectedCountries.splice(index, 1);
+  //     }
 
-      this.updateGraphs();
-    }
+  //     this.updateGraphs();
+  //   }
+  // }
+
+  set selectedCountry(value: string) {
+    this._selectedCountry = value;
+    this.updateGraphs(value);
   }
 
   /**
    * Update graphs and results
    */
-  updateGraphs(): void {
+  updateGraphs(selectedCountry): void {
     this.chartData1.length = 0;
     this.chartData2.length = 0;
     this.selectedDataSet.length = 0;
@@ -155,8 +161,8 @@ export class GraphsViewComponent implements OnInit, OnDestroy {
     let maxX = 0;
     let arraysize = 0;
 
-    this.selectedCountries.forEach(name => {
-      const countryData = this.data.filter(p => p.name === name).sort((obj1, obj2) => {
+    this.subcriptions.add(this.serverService.getDataByCountry(selectedCountry).subscribe(data => {
+      const countryData = data.sort((obj1, obj2) => {
         return obj1.reportNumber - obj2.reportNumber;
       });
 
@@ -174,26 +180,26 @@ export class GraphsViewComponent implements OnInit, OnDestroy {
 
       this.chartData1.push({ data: [], label: name, fill: false });
       this.chartData2.push({ data: [], label: name, fill: false });
-    });
 
-    let idx = 0;
-    this.selectedDataSet.forEach(dataSet => {
-      // Step 2. preallocate memory of chart.
-      this.chartData1[idx].data = new Array<number>(maxX - minX + 1);
-      this.chartData2[idx].data = new Array<number>(maxX - minX + 1);
-      const startIdx = dataSet[0].reportNumber - minX;
-      const howmany = maxX - dataSet[0].reportNumber + 1;
-      this.chartData1[idx].data.splice(startIdx, howmany, ...dataSet.map(d => d.cases));
-      this.chartData2[idx].data.splice(startIdx, howmany, ...dataSet.map(d => d.newCases));
-      idx++;
-    });
+      let idx = 0;
+      this.selectedDataSet.forEach(dataSet => {
+        // Step 2. preallocate memory of chart.
+        this.chartData1[idx].data = new Array<number>(maxX - minX + 1);
+        this.chartData2[idx].data = new Array<number>(maxX - minX + 1);
+        const startIdx = dataSet[0].reportNumber - minX;
+        const howmany = maxX - dataSet[0].reportNumber + 1;
+        this.chartData1[idx].data.splice(startIdx, howmany, ...dataSet.map(d => d.cases));
+        this.chartData2[idx].data.splice(startIdx, howmany, ...dataSet.map(d => d.newCases));
+        idx++;
+      });
 
-    // update the chart.
-    if (this.chart !== undefined) {
-      this.chart.update();
-    }
-    if (this.chart2 !== undefined) {
-      this.chart2.update();
-    }
+      // update the chart.
+      if (this.chart !== undefined) {
+        this.chart.update();
+      }
+      if (this.chart2 !== undefined) {
+        this.chart2.update();
+      }
+    }));
   }
 }

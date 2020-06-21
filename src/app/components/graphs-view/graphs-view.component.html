@@ -2,8 +2,8 @@
     <div class='div-search-result'>
         <mat-form-field class='search-form-field'>
             <mat-label>Countries</mat-label>
-            <mat-select [formControl]="toppings" multiple [(ngModel)]="selectedCountries">
-                <mat-option *ngFor="let item of countries" [value]="item" (onSelectionChange)="onSearchChange($event)">
+            <mat-select [formControl]="toppings" [(value)]="selectedCountry">
+                <mat-option *ngFor="let item of countries" [value]="item">
                     {{item}}
                 </mat-option>
             </mat-select>
