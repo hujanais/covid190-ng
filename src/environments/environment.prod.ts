@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  serverURL: 'https://covid19.pillious.now.sh/api/data'
 };

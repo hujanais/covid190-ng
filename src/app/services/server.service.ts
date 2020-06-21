@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ICovidData } from '../models/icovid-data';
 import { Observable, Subject } from 'rxjs';
+import { environment } from 'src/environments/environment';
 
-// const URL = 'https://covid190api.herokuapp.com/api/data';
-const URL = 'https://covid19.pillious.now.sh/api/data';
+// const URL = 'https://covid19.pillious.now.sh/api/data';
+const URL = environment.serverURL;
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class ServerService {
    * Get data once from server.
    */
   hydrate() {
-    this.httpClient.get('/api/data').subscribe((resp: ICovidData[]) => {
+    this.httpClient.get(URL).subscribe((resp: ICovidData[]) => {
       this.covidData = resp;
       const dates = resp.map(p => p.reportDate);
       this._lastUpdated = dates.reduce((a, b) => a > b ? a : b);
