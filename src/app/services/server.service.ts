@@ -5,8 +5,8 @@ import { Observable, Subject } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 
-const URL = 'https://covid19.pillious.now.sh/api/data';
-// const URL = environment.serverURL;
+// const URL = 'https://covid19.pillious.now.sh/api/data';
+const URL = 'https://pillious-covid-api.herokuapp.com/api/data';
 
 @Injectable({
   providedIn: 'root'
@@ -44,10 +44,10 @@ export class ServerService {
   getDataByCountry(country: string): Observable<ICovidData[]> {
     return this.httpClient.get(URL, { params: { name: country } }).pipe(
       map((resp: ICovidData[]) => {
-        this.covidData = resp;
+        let data = resp;
         const dates = resp.map(p => p.reportDate);
         this._lastUpdated = dates.reduce((a, b) => a > b ? a : b);
-        return this.covidData;
+        return data;
       })
     )
   }

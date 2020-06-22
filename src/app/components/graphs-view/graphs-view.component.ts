@@ -23,9 +23,6 @@ export class GraphsViewComponent implements OnInit, OnDestroy {
   // The dataset to be presented.
   selectedDataSet = new Array<ICovidData[]>();
 
-  // the latest data timestamp
-  lastUpdated: Date;
-
   // The chart data
   chartData1: IChartData[] = new Array<IChartData>();
   chartData2: IChartData[] = new Array<IChartData>();
@@ -109,8 +106,6 @@ export class GraphsViewComponent implements OnInit, OnDestroy {
     }
 
     this.countries = [... new Set(covidData.map(d => d.name))].sort();
-    const dates = covidData.map(p => p.reportDate);
-    this.lastUpdated = dates.reduce((a, b) => a > b ? a : b);
   }
 
   /**
@@ -122,26 +117,6 @@ export class GraphsViewComponent implements OnInit, OnDestroy {
     this.chartData1.length = 0;
     this.chartData2.length = 0;
   }
-
-  /**
-   * Handle the clicking and unclicking of the multi-select.
-   * @param event
-   */
-  // onSearchChange(event) {
-  //   if (event.isUserInput) {
-  //     const country = event.source.value;
-  //     const index = this.selectedCountries.indexOf(country);
-  //     if (event.source.selected) {
-  //       if (index < 0) {
-  //         this.selectedCountries.push(event.source.value);
-  //       }
-  //     } else {
-  //       this.selectedCountries.splice(index, 1);
-  //     }
-
-  //     this.updateGraphs();
-  //   }
-  // }
 
   set selectedCountry(value: string) {
     this._selectedCountry = value;
